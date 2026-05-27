@@ -172,7 +172,7 @@ let _cachedAdminDocs = DEFAULTS.projects;
 
 async function _refreshGhStats() {
   try {
-    const res = await fetch('https://api.github.com/users/surajkr0208/repos?per_page=100');
+    const res = await fetch(`https://api.github.com/users/surajkr0208/repos?per_page=100&t=${Date.now()}`, { cache: 'no-store' });
     if (!res.ok) return;
     const repos = await res.json();
 
@@ -460,7 +460,7 @@ async function loadProjects() {
 
   // Fetch GitHub repos and append unique ones (read-only)
   try {
-    const res = await fetch('https://api.github.com/users/surajkr0208/repos?sort=updated&per_page=30');
+    const res = await fetch(`https://api.github.com/users/surajkr0208/repos?sort=updated&per_page=30&t=${Date.now()}`, { cache: 'no-store' });
     if (!res.ok) return;
     const repos = await res.json();
 

@@ -548,7 +548,7 @@ const GITHUB_USER = 'surajkr0208';
 
 async function fetchGitHubRepos() {
   try {
-    const res  = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=30`);
+    const res  = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=30&t=${Date.now()}`, { cache: 'no-store' });
     if (!res.ok) return [];
     const repos = await res.json();
     return repos
