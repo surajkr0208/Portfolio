@@ -25,6 +25,7 @@
 | **Projects** | Admin-managed + **auto-synced from GitHub** (deduplicated) |
 | **Experience** | Timeline view, fetched live from Firestore |
 | **Certificates** | Gallery with lightbox modal viewer |
+| **AI Assistant** | Real-time Gemini 2.5 Flash chatbot with streaming response |
 | **Contact Form** | EmailJS-powered, sends directly to inbox |
 | **GitHub Activity** | Live contribution graph, repo count, star count |
 | **Dark / Light Mode** | Toggle with localStorage persistence, no flash |
