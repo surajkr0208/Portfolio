@@ -524,6 +524,20 @@ window.saveProject = async function() {
     toast('✅ Project saved!'); closeModal('project'); loadProjects();
   } catch(e) { toast('Error: ' + e.message, 'err'); }
 };
+
+window.RESTORE_PROJECTS = async function() {
+  const DEFAULTS = [
+    { title:'Personal Blog Site', description:'A responsive blogging web application built with Flask that allows users to create, edit, and manage blog posts easily. Uses SQLite for database management with a clean UI.', icon:'📝', color:'#3B82F6', github:'https://github.com/surajkr0208/Personal-Blog-Site', live:'', tech:['Python','Flask','SQLite','HTML','CSS','JavaScript'], order:1 },
+    { title:'Online Quiz Platform', description:'An interactive quiz application where users can attempt quizzes and view scores instantly. Built with Flask and SQLite for the backend, responsive frontend with HTML/CSS/JS.', icon:'🧠', color:'#EC4899', github:'https://github.com/surajkr0208/Online-Quiz-Platform', live:'', tech:['Python','Flask','SQLite','HTML','CSS','JavaScript'], order:2 },
+    { title:'Calendar & Reminder App', description:'A web-based calendar and reminder app that helps users organise tasks and manage reminders. Integrates Python, SQLite, and JSON to store and manage event data.', icon:'📅', color:'#8B5CF6', github:'https://github.com/surajkr0208/CalendarReminderApp', live:'', tech:['Python','Flask','SQLite','JSON','HTML','CSS'], order:3 }
+  ];
+  for (let p of DEFAULTS) {
+    await addDoc(collection(db, 'projects'), p);
+  }
+  toast('Projects restored successfully!');
+  setTimeout(() => location.reload(), 1000);
+};
+
 window.editProject   = id => openModal('project', id);
 window.deleteProject = async function(id) {
   if (!confirm('Delete this project?')) return;
