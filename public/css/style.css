@@ -50,6 +50,96 @@
   --nav-h:          76px;
 }
 
+/* ── Light Mode Tokens ────────────────────────────────────── */
+[data-theme="light"] {
+  --bg:             #F8F7FF;
+  --bg-2:           #F0EFFE;
+  --bg-3:           #E8E5FC;
+  --surface:        rgba(124,58,237,0.05);
+  --surface-2:      rgba(124,58,237,0.09);
+  --surface-3:      rgba(124,58,237,0.13);
+  --border:         rgba(124,58,237,0.14);
+  --border-2:       rgba(124,58,237,0.24);
+
+  --text:           #1A1035;
+  --text-2:         #5B5080;
+  --text-3:         #9B92C0;
+
+  --glow-p:         0 0 40px rgba(124,58,237,.18);
+  --glow-s:         0 0 40px rgba(236,72,153,.18);
+  --glow-a:         0 0 40px rgba(245,158,11,.18);
+}
+
+/* ── Theme Toggle Button ──────────────────────────────────── */
+.theme-toggle {
+  display:flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text-2);font-size:.95rem;
+  cursor:pointer;transition:var(--tr);
+  position:relative;overflow:hidden;
+}
+.theme-toggle:hover {
+  background:rgba(124,58,237,.15);border-color:var(--primary);
+  color:var(--primary-light);transform:rotate(20deg) scale(1.1);
+}
+.theme-toggle .t-sun,.theme-toggle .t-moon {
+  position:absolute;transition:all .35s cubic-bezier(.4,0,.2,1);
+}
+.theme-toggle .t-sun  { opacity:1; transform:scale(1) rotate(0deg); }
+.theme-toggle .t-moon { opacity:0; transform:scale(0) rotate(-90deg); }
+[data-theme="light"] .theme-toggle .t-sun  { opacity:0; transform:scale(0) rotate(90deg); }
+[data-theme="light"] .theme-toggle .t-moon { opacity:1; transform:scale(1) rotate(0deg); }
+
+/* Light mode navbar background */
+[data-theme="light"] .navbar.scrolled {
+  background:rgba(248,247,255,.95);
+}
+/* Light mode mobile nav drawer */
+[data-theme="light"] .nav-links {
+  background:rgba(248,247,255,.98);
+  border-bottom:1px solid var(--border);
+}
+/* Light mode floating profile badges */
+[data-theme="light"] .f-badge {
+  background:rgba(248,247,255,.96);
+  border-color:var(--border-2);
+}
+/* Light mode profile image border */
+[data-theme="light"] .p-img-wrap {
+  background:linear-gradient(var(--bg),var(--bg)) padding-box, var(--gradient) border-box;
+}
+/* Light mode contact form inputs */
+[data-theme="light"] .fg input,
+[data-theme="light"] .fg textarea {
+  background:rgba(124,58,237,.04);
+  color:var(--text);
+}
+[data-theme="light"] .fg input::placeholder,
+[data-theme="light"] .fg textarea::placeholder {
+  color:var(--text-3);
+}
+/* Light mode skill ring background stroke */
+[data-theme="light"] .ring-bg {
+  stroke:rgba(124,58,237,.12);
+}
+/* Light mode modal box */
+[data-theme="light"] .modal-box {
+  background:var(--bg-2);
+}
+/* Light mode section backgrounds */
+[data-theme="light"] .about   { background:var(--bg-2); }
+[data-theme="light"] .skills  { background:var(--bg); }
+[data-theme="light"] .projects{ background:var(--bg-2); }
+[data-theme="light"] .experience{ background:var(--bg); }
+[data-theme="light"] .certificates{ background:var(--bg-2); }
+[data-theme="light"] .contact { background:var(--bg); }
+[data-theme="light"] .footer  { background:var(--bg-3); }
+/* Light mode timeline dot border */
+[data-theme="light"] .tl-dot  { border-color:var(--bg); }
+/* Light mode stat numbers stay visible */
+[data-theme="light"] .stat-num { -webkit-text-fill-color:transparent; }
+
 /* ── Reset ────────────────────────────────────────────────── */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;font-size:16px}
@@ -364,6 +454,53 @@ ul{list-style:none}
 /* ── Projects ─────────────────────────────────────────────── */
 .projects{background:var(--bg-2)}
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:2rem}
+
+/* ── GitHub Activity Strip ────────────────────────────────── */
+.gh-activity-strip{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem 1.5rem;margin-bottom:1.5rem;
+}
+.gh-strip-left{display:flex;align-items:center;gap:1rem}
+.gh-avatar{width:48px;height:48px;border-radius:50%;border:2px solid rgba(124,58,237,.3)}
+.gh-strip-name{font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem}
+.gh-strip-name i{color:#8B949E}
+.gh-strip-meta{display:flex;gap:1rem;font-size:.78rem;color:var(--text-2)}
+.gh-strip-meta i{margin-right:.25rem;color:var(--primary-light)}
+.gh-strip-btn{
+  display:flex;align-items:center;gap:.5rem;padding:9px 18px;
+  background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);
+  border-radius:var(--radius-sm);font-size:.82rem;font-weight:600;
+  color:var(--primary-light);transition:var(--tr);text-decoration:none;
+}
+.gh-strip-btn:hover{background:rgba(124,58,237,.2);border-color:var(--primary)}
+
+/* ── Contribution Graph ───────────────────────────────────── */
+.gh-graph-wrap{
+  margin-bottom:2.5rem;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.5rem;overflow:hidden;
+}
+.gh-graph{width:100%;height:auto;border-radius:8px;opacity:.85}
+.gh-graph-label{font-size:.75rem;color:var(--text-3);text-align:center;margin-top:.75rem}
+.gh-graph-label i{margin-right:.3rem;color:var(--green)}
+
+/* ── GitHub project card badge & meta ────────────────────── */
+.proj-head-right{display:flex;flex-direction:column;align-items:flex-end;gap:.5rem}
+.gh-badge{
+  display:inline-flex;align-items:center;gap:.3rem;
+  font-size:.65rem;font-weight:700;padding:3px 10px;border-radius:100px;
+  background:rgba(139,148,158,.1);border:1px solid rgba(139,148,158,.25);
+  color:#8B949E;letter-spacing:.4px;
+}
+.gh-meta{
+  display:flex;flex-wrap:wrap;gap:.75rem;font-size:.73rem;color:var(--text-3);
+  margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border);
+  align-items:center;
+}
+.gh-meta i{margin-right:.2rem;color:var(--primary-light)}
+.lang-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem;vertical-align:middle}
+.gh-card::before{background:linear-gradient(135deg,#8B949E,#7C3AED)}
+
 
 .proj-card{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);

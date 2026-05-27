@@ -22,6 +22,10 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css"/>
+  <script>
+    // Apply saved theme immediately to prevent flash of dark mode
+    (function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.setAttribute('data-theme','light')})();
+  </script>
 </head>
 <body>
 
@@ -45,7 +49,7 @@
 <nav class="navbar" id="navbar">
   <div class="nav-wrap">
     <a href="#home" class="nav-logo">
-      <span class="nav-logo-txt">Suraj.</span>
+      <span class="nav-logo-txt">SURAJ</span>
       <span class="nav-dot"></span>
     </a>
 
@@ -60,6 +64,10 @@
     </ul>
 
     <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle theme">
+        <i class="fas fa-sun t-sun"></i>
+        <i class="fas fa-moon t-moon"></i>
+      </button>
       <a href="login.html" class="btn-admin" id="adminBtn" title="Admin Login">
         <i class="fas fa-lock"></i>
       </a>
@@ -167,8 +175,12 @@
         </div>
         <div class="about-stats">
           <div class="stat-card">
-            <span class="stat-num" data-target="3">0</span>
+            <span class="stat-num grad-text" id="aboutStatProjects">—</span>
             <span class="stat-lbl">Projects</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num grad-text" id="aboutStatStars">—</span>
+            <span class="stat-lbl">GitHub Stars</span>
           </div>
           <div class="stat-card">
             <span class="stat-num" data-target="1">0</span>
@@ -261,11 +273,39 @@
       <h2 class="section-title">Featured <span class="grad-text">Projects</span></h2>
       <div class="section-line"></div>
     </div>
+
+    <!-- ── GitHub Activity Strip ──────────────────────────── -->
+    <div class="gh-activity-strip">
+      <div class="gh-strip-left">
+        <img class="gh-avatar" src="https://github.com/surajkr0208.png?size=48" alt="GitHub Avatar" loading="lazy"/>
+        <div>
+          <div class="gh-strip-name"><i class="fab fa-github"></i> surajkr0208</div>
+          <div class="gh-strip-meta">
+            <span><i class="fas fa-book"></i> <span id="ghRepoCount">—</span> repos</span>
+            <span><i class="fas fa-star"></i> <span id="ghStarCount">—</span> stars</span>
+          </div>
+        </div>
+      </div>
+      <a href="https://github.com/surajkr0208" target="_blank" class="gh-strip-btn">
+        <i class="fab fa-github"></i> View on GitHub
+      </a>
+    </div>
+
+    <!-- Contribution graph from github-readme-stats (free) -->
+    <div class="gh-graph-wrap">
+      <img class="gh-graph" id="ghGraph"
+        src="https://ghchart.rshah.org/7C3AED/surajkr0208"
+        alt="GitHub Contribution Graph" loading="lazy"
+        onerror="this.parentElement.style.display='none'"/>
+      <p class="gh-graph-label"><i class="fas fa-calendar-check"></i> GitHub Contribution Activity</p>
+    </div>
+
     <div class="projects-grid" id="projectsGrid">
       <!-- Rendered by app.js -->
     </div>
   </div>
 </section>
+
 
 <!-- ════════════════════════════════════════════════════════ -->
 <!--  EXPERIENCE                                              -->

@@ -9,6 +9,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
   <link rel="stylesheet" href="css/vault.css"/>
+  <script>
+    // Apply saved theme immediately to prevent flash
+    (function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.setAttribute('data-theme','light')})();
+  </script>
 </head>
 <body>
 
@@ -69,6 +73,10 @@
       <span class="vault-secure-badge">🔒 Encrypted · Private</span>
     </div>
     <div class="vault-top-actions">
+      <button id="themeToggle" title="Toggle light/dark mode" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);color:var(--text-2);font-size:.85rem;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;flex-shrink:0" aria-label="Toggle theme">
+        <i class="fas fa-sun" style="position:absolute;transition:all .35s"></i>
+        <i class="fas fa-moon" style="position:absolute;opacity:0;transform:scale(0) rotate(-90deg);transition:all .35s"></i>
+      </button>
       <span class="vault-auto-lock" id="autoLockTimer">
         <i class="fas fa-clock"></i> Auto-lock: <span id="timerDisplay">10:00</span>
       </span>

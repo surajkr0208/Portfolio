@@ -13,6 +13,34 @@
   --font:'Inter',sans-serif;--font-h:'Space Grotesk',sans-serif;
   --radius:16px;--radius-sm:10px;--tr:all .3s cubic-bezier(.4,0,.2,1);
 }
+[data-theme="light"]{
+  --bg:#F8F7FF;--bg-2:#F0EFFE;--bg-3:#E8E5FC;
+  --surface:rgba(124,58,237,.05);--surface-2:rgba(124,58,237,.09);--surface-3:rgba(124,58,237,.13);
+  --border:rgba(124,58,237,.14);--border-2:rgba(124,58,237,.24);
+  --text:#1A1035;--text-2:#5B5080;--text-3:#9B92C0;
+}
+/* ── Light Mode Overrides ─────────────────────────────────── */
+[data-theme="light"] .lock-card {
+  background:rgba(248,247,255,.98);
+}
+[data-theme="light"] .vault-top {
+  background:rgba(248,247,255,.95);
+  border-bottom:1px solid var(--border);
+}
+[data-theme="light"] .vault-sidebar {
+  background:rgba(240,238,254,.6);
+  border-right:1px solid var(--border);
+}
+[data-theme="light"] .input-wrap input {
+  background:rgba(124,58,237,.04);
+  color:var(--text);
+}
+[data-theme="light"] .input-wrap input::placeholder { color:var(--text-3); }
+[data-theme="light"] .file-card {
+  background:var(--surface);
+  border-color:var(--border);
+}
+[data-theme="light"] .preview-box { background:var(--bg-2); }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}

@@ -15,6 +15,32 @@
   --radius:16px;--radius-sm:10px;--tr:all .3s cubic-bezier(.4,0,.2,1);
   --sb:280px;
 }
+[data-theme="light"]{
+  --bg:#F8F7FF;--bg-2:#F0EFFE;--bg-3:#E8E5FC;
+  --sidebar:#EDEAFC;
+  --surface:rgba(124,58,237,.05);--surface-2:rgba(124,58,237,.09);--surface-3:rgba(124,58,237,.13);
+  --border:rgba(124,58,237,.14);--border-2:rgba(124,58,237,.24);
+  --text:#1A1035;--text-2:#5B5080;--text-3:#9B92C0;
+}
+/* ── Light Mode Overrides ─────────────────────────────────── */
+[data-theme="light"] .topbar {
+  background:rgba(248,247,255,.95);
+  border-bottom:1px solid var(--border);
+}
+[data-theme="light"] .fg input,
+[data-theme="light"] .fg textarea,
+[data-theme="light"] .fg select {
+  background:rgba(124,58,237,.04);
+  color:var(--text);
+}
+[data-theme="light"] .fg input::placeholder,
+[data-theme="light"] .fg textarea::placeholder { color:var(--text-3); }
+[data-theme="light"] .drop-zone {
+  background:rgba(124,58,237,.02);
+}
+[data-theme="light"] .d-modal-box { background:var(--bg-2); }
+[data-theme="light"] .stat-box   { background:var(--surface); }
+[data-theme="light"] .card        { background:var(--surface); }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex}

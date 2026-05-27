@@ -1,14 +1,14 @@
 // ============================================================
 //  ADMIN DASHBOARD JS — Suraj Kumar Mahto
 //  Images stored as base64 in Firestore (FREE — no Storage needed)
-//  Document Vault uses Cloudinary free tier
+//  Document Vault uses Supabase Storage (free tier, full CORS)
 // ============================================================
 
 import { requireAuth, logout, login } from './auth.js';
 import { db } from './firebase-config.js';
 import {
   collection, doc, getDocs, setDoc, deleteDoc, addDoc,
-  query, orderBy, getDoc, serverTimestamp
+  query, orderBy, getDoc, serverTimestamp, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { DEFAULTS } from './app.js';
 
@@ -131,18 +131,73 @@ async function compressImage(file, maxWidth = 600, quality = 0.82) {
 }
 
 // ════════════════════════════════════════════════════════════
-//  OVERVIEW
+//  OVERVIEW — real-time listeners for all stat boxes
 // ════════════════════════════════════════════════════════════
-async function loadOverview() {
+const _dbSet = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+function loadOverview() {
   if (!db) return;
-  const [skills, projects, certs, exp] = await Promise.all([
-    safeGet('skills'), safeGet('projects'), safeGet('certificates'), safeGet('experience')
-  ]);
-  document.getElementById('statsProjects').textContent = projects.length || DEFAULTS.projects.length;
-  document.getElementById('statsCerts').textContent    = certs.length || DEFAULTS.certificates.length;
-  document.getElementById('statsSkills').textContent   = skills.length || DEFAULTS.skills.length;
-  document.getElementById('statsExp').textContent      = exp.length || DEFAULTS.experience.length;
+
+  sub('skills',       DEFAULTS.skills,       n    => _dbSet('statsSkills', n));
+  sub('certificates', DEFAULTS.certificates, n    => _dbSet('statsCerts',  n));
+  sub('experience',   DEFAULTS.experience,   n    => _dbSet('statsExp',    n));
+  // For projects: pass full docs so GitHub dedup can work
+  subDocs('projects', DEFAULTS.projects, docs => {
+    _cachedAdminDocs = docs;
+    _dbSet('statsProjects', docs.length); // base count; refined after GitHub fetch
+    _refreshGhStats();
+  });
+
+  // GitHub stats — fetch now + every 5 min
+  _refreshGhStats();
+  setInterval(_refreshGhStats, 5 * 60 * 1000);
 }
+
+// Simple count-only subscriber
+function sub(col, fallback, cb) {
+  onSnapshot(query(collection(db, col), orderBy('order','asc')),
+    snap => cb(snap.empty ? fallback.length : snap.docs.length),
+    ()   => cb(fallback.length)
+  );
+}
+// Full-doc subscriber
+function subDocs(col, fallback, cb) {
+  onSnapshot(query(collection(db, col), orderBy('order','asc')),
+    snap => cb(snap.empty ? fallback : snap.docs.map(d => ({ id: d.id, ...d.data() }))),
+    ()   => cb(fallback)
+  );
+}
+
+let _cachedAdminDocs = DEFAULTS.projects;
+
+async function _refreshGhStats() {
+  try {
+    const res = await fetch('https://api.github.com/users/surajkr0208/repos?per_page=100');
+    if (!res.ok) return;
+    const repos = await res.json();
+
+    // Build dedup sets from admin projects (same logic as public portfolio)
+    const adminUrls   = new Set(_cachedAdminDocs.map(p => p.github).filter(Boolean).map(u => u.toLowerCase().trim()));
+    const adminTitles = new Set(_cachedAdminDocs.map(p => p.title?.toLowerCase().replace(/[\s_-]+/g, '')));
+
+    const repoCount  = repos.filter(r => !r.fork).length;
+    const starCount  = repos.reduce((s, r) => s + r.stargazers_count, 0);
+    // Only count GitHub repos NOT already in the admin panel
+    const uniqueGh   = repos.filter(r =>
+      r.description && !r.fork &&
+      !adminUrls.has(r.html_url?.toLowerCase().trim()) &&
+      !adminTitles.has(r.name?.replace(/[-_]+/g,' ').toLowerCase().replace(/[\s_-]+/g,''))
+    ).length;
+
+    _dbSet('statsGhRepos', repoCount);
+    _dbSet('statsGhStars', starCount);
+    _dbSet('dbGhRepos',    repoCount);
+    _dbSet('dbGhStars',    starCount);
+    // Total unique projects = admin + truly new GitHub repos
+    _dbSet('statsProjects', _cachedAdminDocs.length + uniqueGh);
+  } catch { /* fail silently */ }
+}
+
 
 // ════════════════════════════════════════════════════════════
 //  PROFILE  — photo stored as compressed base64 in Firestore
@@ -383,8 +438,10 @@ async function loadProjects() {
   projectsCache = await safeGet('projects', []);
   if (!projectsCache.length) projectsCache = DEFAULTS.projects;
   const list = document.getElementById('projList');
-  if (!projectsCache.length) { list.innerHTML = '<p style="color:var(--text-3);font-size:.85rem">No projects yet.</p>'; return; }
-  list.innerHTML = projectsCache.map(p => `
+
+  // Render admin projects (editable)
+  const adminHTML = projectsCache.length
+    ? projectsCache.map(p => `
     <div class="proj-item">
       <div style="font-size:1.75rem;flex-shrink:0">${p.icon || '💻'}</div>
       <div class="proj-item-info">
@@ -396,8 +453,55 @@ async function loadProjects() {
         <button class="btn btn-ghost btn-sm btn-icon" onclick="editProject('${p.id}')"><i class="fas fa-pen"></i></button>
         <button class="btn btn-danger btn-sm btn-icon" onclick="deleteProject('${p.id}')"><i class="fas fa-trash"></i></button>
       </div>
-    </div>`).join('');
+    </div>`).join('')
+    : '<p style="color:var(--text-3);font-size:.85rem">No projects yet.</p>';
+
+  list.innerHTML = adminHTML;
+
+  // Fetch GitHub repos and append unique ones (read-only)
+  try {
+    const res = await fetch('https://api.github.com/users/surajkr0208/repos?sort=updated&per_page=30');
+    if (!res.ok) return;
+    const repos = await res.json();
+
+    // Dedup against admin projects
+    const adminUrls   = new Set(projectsCache.map(p => p.github).filter(Boolean).map(u => u.toLowerCase().trim()));
+    const adminTitles = new Set(projectsCache.map(p => p.title?.toLowerCase().replace(/[\s_-]+/g, '')));
+    const unique = repos.filter(r =>
+      r.description && !r.fork &&
+      !adminUrls.has(r.html_url?.toLowerCase().trim()) &&
+      !adminTitles.has(r.name?.replace(/[-_]+/g,' ').toLowerCase().replace(/[\s_-]+/g,''))
+    );
+
+    if (unique.length) {
+      const divider = `<div style="display:flex;align-items:center;gap:.75rem;margin:1.25rem 0 .5rem;color:var(--text-3);font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">
+        <i class="fab fa-github"></i> Auto-synced from GitHub
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+      </div>`;
+      const ghHTML = unique.map(r => `
+        <div class="proj-item" style="opacity:.88">
+          <div style="font-size:1.75rem;flex-shrink:0">🐙</div>
+          <div class="proj-item-info">
+            <div class="proj-item-title" style="display:flex;align-items:center;gap:.5rem">
+              ${r.name.replace(/-/g,' ').replace(/_/g,' ')}
+              <span style="font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:100px;background:rgba(139,148,158,.12);color:#8B949E;border:1px solid rgba(139,148,158,.2)">GitHub</span>
+            </div>
+            <div class="proj-item-desc">${r.description}</div>
+            <div class="proj-item-tech">
+              ${r.language ? `<span class="tag">${r.language}</span>` : ''}
+              ${(r.topics||[]).map(t => `<span class="tag">${t}</span>`).join('')}
+            </div>
+          </div>
+          <div class="proj-item-actions">
+            <a href="${r.html_url}" target="_blank" class="btn btn-ghost btn-sm btn-icon" title="Open on GitHub"><i class="fab fa-github"></i></a>
+            ${r.homepage ? `<a href="${r.homepage}" target="_blank" class="btn btn-ghost btn-sm btn-icon" title="Live Demo"><i class="fas fa-external-link-alt"></i></a>` : ''}
+          </div>
+        </div>`).join('');
+      list.innerHTML += divider + ghHTML;
+    }
+  } catch { /* fail silently if GitHub API unreachable */ }
 }
+
 
 window.saveProject = async function() {
   if (needsDb()) return;
@@ -685,3 +789,27 @@ document.addEventListener('keydown', e => {
 
 // ── Init ──────────────────────────────────────────────────
 loadOverview();
+
+// ── Theme Toggle (Dark / Light) ──────────────────────
+(function() {
+  const html = document.documentElement;
+  const btn  = document.getElementById('themeToggle');
+  if (!btn) return;
+  const [sun, moon] = btn.querySelectorAll('i');
+
+  function applyIcons() {
+    const light = html.getAttribute('data-theme') === 'light';
+    sun.style.opacity  = light ? '0'   : '1';
+    sun.style.transform  = light ? 'scale(0) rotate(90deg)'  : 'scale(1) rotate(0deg)';
+    moon.style.opacity = light ? '1'   : '0';
+    moon.style.transform = light ? 'scale(1) rotate(0deg)'   : 'scale(0) rotate(-90deg)';
+  }
+  applyIcons();
+
+  btn.addEventListener('click', () => {
+    const isLight = html.getAttribute('data-theme') === 'light';
+    if (isLight) { html.removeAttribute('data-theme'); localStorage.setItem('theme','dark'); }
+    else         { html.setAttribute('data-theme','light'); localStorage.setItem('theme','light'); }
+    applyIcons();
+  });
+})();

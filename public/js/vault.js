@@ -1,6 +1,6 @@
 // ============================================================
 //  DOCUMENT VAULT JS — Suraj Kumar Mahto
-//  Files → Cloudinary free tier (25GB, no credit card)
+//  Files → Supabase Storage (1GB free, full CORS support)
 //  Metadata → Firestore (free tier)
 // ============================================================
 
@@ -10,8 +10,8 @@ import { signInWithEmailAndPassword, onAuthStateChanged }
 import {
   collection, addDoc, getDocs, deleteDoc, doc, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { uploadToCloudinary, isCloudinaryConfigured }
-  from './cloudinary-config.js';
+import { uploadToSupabase, deleteFromSupabase, isSupabaseConfigured }
+  from './supabase-config.js';
 
 // ── State ────────────────────────────────────────────────
 let currentUser  = null;
@@ -186,7 +186,7 @@ window.handleFiles = async function(files) {
   loadFiles();
 };
 
-// ── Upload to Cloudinary (FREE — 25GB no credit card) ─────
+// ── Upload to Supabase Storage (Free, CORS-friendly) ───────
 async function uploadFile(file, category) {
   const MAX = 50 * 1024 * 1024;
   if (file.size > MAX) { toast(`${file.name} exceeds 50MB limit`, 'err'); return; }
@@ -195,9 +195,8 @@ async function uploadFile(file, category) {
   const bar  = document.getElementById('upBar');
   const lbl  = document.getElementById('upLbl');
 
-  // Check Cloudinary config
-  if (!isCloudinaryConfigured()) {
-    toast('⚠️ Cloudinary not set up. Add your cloud name to js/cloudinary-config.js', 'err');
+  if (!isSupabaseConfigured()) {
+    toast('⚠️ Supabase not configured.', 'err');
     return;
   }
 
@@ -206,9 +205,9 @@ async function uploadFile(file, category) {
   bar.style.width = '0%';
 
   try {
-    const result = await uploadToCloudinary(
+    const result = await uploadToSupabase(
       file,
-      `vault/${currentUser.uid}`, // folder per user
+      currentUser.uid,  // folder = user's UID
       pct => { bar.style.width = pct + '%'; }
     );
 
@@ -218,8 +217,8 @@ async function uploadFile(file, category) {
       category,
       size:        file.size,
       type:        file.type,
-      url:         result.secure_url,
-      publicId:    result.public_id,  // stored for reference
+      url:         result.url,
+      storagePath: result.storagePath,  // Needed for deletion
       uploadedAt:  new Date().toISOString()
     });
 
@@ -262,11 +261,6 @@ function renderFiles(files) {
       <div class="empty-state" style="grid-column:1/-1">
         <i class="fas fa-vault"></i>
         <p>No documents here yet.<br/>Upload your first file above!</p>
-        ${!isCloudinaryConfigured() ? `
-          <div style="margin-top:1.5rem;padding:1rem 1.25rem;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;font-size:.78rem;color:#FCD34D;max-width:400px;margin-left:auto;margin-right:auto;text-align:left">
-            <strong>⚠️ Setup required:</strong> File uploads need Cloudinary.<br/>
-            Open <code>js/cloudinary-config.js</code> and add your free Cloudinary credentials. See SETUP.md → Cloudinary section.
-          </div>` : ''}
       </div>`;
     return;
   }
@@ -301,12 +295,18 @@ function renderFiles(files) {
   }).join('');
 }
 
-// ── Delete — removes Firestore record (file stays on Cloudinary) ──
-// Note: Cloudinary deletion from frontend requires a server/signature.
-// For a personal vault this is fine — URLs are unguessable & private.
+// ── Delete — removes from Supabase Storage + Firestore record ──
 window.deleteFile = async function(id) {
   if (!confirm('Remove this document from your vault?')) return;
+  const file = allFiles.find(f => f.id === id);
+  if (!file) return;
   try {
+    // Delete from Supabase Storage if we have the path
+    if (file.storagePath) {
+      try { await deleteFromSupabase(file.storagePath); } catch(se) {
+        console.warn('Storage delete failed (may already be gone):', se);
+      }
+    }
     await deleteDoc(doc(db, 'vault', id));
     allFiles = allFiles.filter(f => f.id !== id);
     renderFiles(filterByActiveCat());
@@ -333,9 +333,9 @@ window.openPreview = function(id) {
   if (isImg) {
     body.innerHTML = `<img src="${file.url}" alt="${file.name}" style="max-width:100%;max-height:70vh;border-radius:8px"/>`;
   } else if (file.type === 'application/pdf') {
-    // Native PDF.js rendering to bypass Cloudinary raw attachment blocks
-    // Cloudinary raw forces downloads, which crashes Edge's native PDF viewer.
-    // pdf.js fetches the bytes and renders them manually.
+    // Native PDF.js rendering — fetches bytes and draws directly onto canvas
+    // This bypasses the forced-download Content-Type from storage providers.
+    // pdf.js renders locally in-browser without needing inline viewer support.
     body.innerHTML = `
       <div id="pdfContainer" style="width:100%;height:70vh;overflow-y:auto;background:#2d2d35;border-radius:8px;position:relative;text-align:center">
         <div id="pdfLoading" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#94a3b8">
@@ -357,7 +357,7 @@ window.openPreview = function(id) {
       <div style="text-align:center;color:var(--text-2);padding:3rem">
         <i class="fas fa-file" style="font-size:4rem;opacity:.3;display:block;margin-bottom:1rem"></i>
         <p style="margin-bottom:1.5rem">Native preview not available for this file type.</p>
-        <p style="font-size:0.8rem; color:#94a3b8">Cloudinary free-tier restricts inline document previews.</p>
+        <p style="font-size:0.8rem; color:#94a3b8">Preview not supported for this file type — use the Download button.</p>
       </div>`;
   }
 
@@ -400,3 +400,27 @@ function renderPDF(url) {
     if (loading) loading.innerHTML = `<p style="color:#ef4444"><i class="fas fa-exclamation-triangle"></i> Failed to load PDF preview.</p>`;
   });
 }
+
+// ── Theme Toggle (Dark / Light) ────────────────────────────
+(function() {
+  const html = document.documentElement;
+  const btn  = document.getElementById('themeToggle');
+  if (!btn) return;
+  const [sun, moon] = btn.querySelectorAll('i');
+
+  function applyIcons() {
+    const light = html.getAttribute('data-theme') === 'light';
+    sun.style.opacity    = light ? '0' : '1';
+    sun.style.transform  = light ? 'scale(0) rotate(90deg)'  : 'scale(1) rotate(0deg)';
+    moon.style.opacity   = light ? '1' : '0';
+    moon.style.transform = light ? 'scale(1) rotate(0deg)'   : 'scale(0) rotate(-90deg)';
+  }
+  applyIcons();
+
+  btn.addEventListener('click', () => {
+    const isLight = html.getAttribute('data-theme') === 'light';
+    if (isLight) { html.removeAttribute('data-theme'); localStorage.setItem('theme','dark'); }
+    else         { html.setAttribute('data-theme','light'); localStorage.setItem('theme','light'); }
+    applyIcons();
+  });
+})();
