@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Document Vault — Suraj Kumar Mahto</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="css/vault.css"/>
+</head>
+<body>
+
+<!-- ── Toast ─────────────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  LOCK SCREEN                                             -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-bg-g1"></div><div class="lock-bg-g2"></div>
+  <div class="lock-card">
+    <div class="vault-icon"><i class="fas fa-vault"></i></div>
+    <div class="lock-title">Document Vault</div>
+    <p class="lock-sub">Your private, encrypted document storage</p>
+
+    <div class="lock-info">
+      <i class="fas fa-shield-halved"></i>
+      Documents are stored securely in Firebase and accessible only to you
+    </div>
+
+    <form onsubmit="event.preventDefault(); document.getElementById('unlockBtn').click();">
+      <div class="fg">
+        <label for="lockEmail">Email</label>
+        <div class="input-wrap">
+          <i class="fas fa-envelope ico"></i>
+          <input type="email" id="lockEmail" placeholder="Your email address"/>
+        </div>
+      </div>
+      <div class="fg">
+        <label for="lockPass">Password</label>
+        <div class="input-wrap">
+          <i class="fas fa-lock ico"></i>
+          <input type="password" id="lockPass" placeholder="••••••••••"/>
+          <span class="eye" id="eyeToggle"><i class="fas fa-eye" id="eyeIco"></i></span>
+        </div>
+      </div>
+      <button type="button" class="btn-unlock" id="unlockBtn">
+        <i class="fas fa-unlock-keyhole"></i> Unlock Vault
+      </button>
+      <div class="lock-err" id="lockErr">Incorrect credentials. Please try again.</div>
+    </form>
+    <a href="dashboard.html" class="lock-back"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  VAULT APP (shown after login)                           -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="vault-app" id="vaultApp">
+
+  <!-- Topbar -->
+  <div class="vault-top">
+    <div class="vault-top-left">
+      <div class="vault-logo">
+        <i class="fas fa-vault"></i> Document Vault
+      </div>
+      <span class="vault-secure-badge">🔒 Encrypted · Private</span>
+    </div>
+    <div class="vault-top-actions">
+      <span class="vault-auto-lock" id="autoLockTimer">
+        <i class="fas fa-clock"></i> Auto-lock: <span id="timerDisplay">10:00</span>
+      </span>
+      <button class="btn btn-ghost btn-sm" onclick="lockNow()">
+        <i class="fas fa-lock"></i> Lock
+      </button>
+      <a href="dashboard.html" class="btn btn-ghost btn-sm">
+        <i class="fas fa-gauge-high"></i> Dashboard
+      </a>
+    </div>
+  </div>
+
+  <div class="vault-layout">
+
+    <!-- Category Sidebar -->
+    <div class="vault-sidebar">
+      <button class="cat-btn active" data-cat="all" onclick="filterCat('all',this)">
+        <i class="fas fa-layer-group"></i> All Documents
+        <span class="cat-count" id="count-all">0</span>
+      </button>
+      <button class="cat-btn" data-cat="identity" onclick="filterCat('identity',this)">
+        <i class="fas fa-id-card"></i> Identity
+        <span class="cat-count" id="count-identity">0</span>
+      </button>
+      <button class="cat-btn" data-cat="academic" onclick="filterCat('academic',this)">
+        <i class="fas fa-graduation-cap"></i> Academic
+        <span class="cat-count" id="count-academic">0</span>
+      </button>
+      <button class="cat-btn" data-cat="professional" onclick="filterCat('professional',this)">
+        <i class="fas fa-briefcase"></i> Professional
+        <span class="cat-count" id="count-professional">0</span>
+      </button>
+      <button class="cat-btn" data-cat="financial" onclick="filterCat('financial',this)">
+        <i class="fas fa-landmark"></i> Financial
+        <span class="cat-count" id="count-financial">0</span>
+      </button>
+      <button class="cat-btn" data-cat="other" onclick="filterCat('other',this)">
+        <i class="fas fa-folder"></i> Other
+        <span class="cat-count" id="count-other">0</span>
+      </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="vault-content">
+      <div class="vault-header">
+        <h2 id="catHeading">All Documents</h2>
+        <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+          <div class="vault-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search documents…" oninput="filterSearch()"/>
+          </div>
+          <select id="catSelect" onchange="filterCatSelect()"
+                  style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:.78rem;outline:none">
+            <option value="identity">🪪 Identity</option>
+            <option value="academic">🎓 Academic</option>
+            <option value="professional">💼 Professional</option>
+            <option value="financial">🏦 Financial</option>
+            <option value="other">📁 Other</option>
+          </select>
+          <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+            <i class="fas fa-cloud-upload-alt"></i> Upload
+          </button>
+        </div>
+      </div>
+
+      <!-- Drop Zone -->
+      <div class="vault-drop" id="dropZone"
+           onclick="document.getElementById('fileInput').click()"
+           ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFiles(event)">
+        <div class="vault-drop-ico"><i class="fas fa-cloud-arrow-up"></i></div>
+        <p>Drag &amp; drop files here or <span>browse</span></p>
+        <p class="vault-drop-sub">PDF, JPG, PNG, DOCX · Max 50MB per file · Files are private &amp; encrypted</p>
+        <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.docx,.doc,.txt"
+               onchange="handleFiles(this.files)"/>
+      </div>
+
+      <!-- Upload Progress -->
+      <div class="upload-progress" id="uploadProgress">
+        <div class="up-lbl" id="upLbl">Uploading…</div>
+        <div class="up-bar-wrap"><div class="up-bar" id="upBar"></div></div>
+      </div>
+
+      <!-- Files Grid -->
+      <div class="files-grid" id="filesGrid"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  PREVIEW MODAL                                           -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="preview-modal" id="previewModal">
+  <div class="preview-bg" onclick="closePreview()"></div>
+  <div class="preview-box">
+    <div class="preview-head">
+      <div class="preview-head-title" id="previewTitle">Document</div>
+      <div class="preview-head-actions">
+        <a class="preview-btn preview-btn-dl" id="previewDlBtn" href="#" download>
+          <i class="fas fa-download"></i> Download
+        </a>
+        <button class="preview-btn preview-btn-close" onclick="closePreview()">
+          <i class="fas fa-times"></i> Close
+        </button>
+      </div>
+    </div>
+    <div class="preview-body" id="previewBody"></div>
+  </div>
+</div>
+
+<script type="module" src="js/vault.js"></script>
+</body>
+</html>

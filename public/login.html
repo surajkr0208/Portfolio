@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Admin Login — Suraj Kumar Mahto</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <style>
+    :root{
+      --primary:#7C3AED;--secondary:#EC4899;--accent:#F59E0B;
+      --bg:#05050A;--surface:rgba(255,255,255,.05);--border:rgba(255,255,255,.1);
+      --text:#F1F5F9;--text-2:#94A3B8;--text-3:#4B5563;
+      --gradient:linear-gradient(135deg,#7C3AED,#EC4899,#F59E0B);
+      --gradient-text:linear-gradient(135deg,#A78BFA,#F472B6,#FCD34D);
+      --font:'Inter',sans-serif;--font-h:'Space Grotesk',sans-serif;
+      --radius:20px;--tr:all .3s cubic-bezier(.4,0,.2,1);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    /* Animated BG */
+    .bg{position:fixed;inset:0;z-index:0}
+    .g1,.g2,.g3{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+    .g1{width:500px;height:500px;background:rgba(124,58,237,.14);top:-150px;left:-100px;animation:f 9s ease-in-out infinite}
+    .g2{width:400px;height:400px;background:rgba(236,72,153,.1);bottom:-80px;right:-80px;animation:f 12s ease-in-out infinite reverse}
+    .g3{width:250px;height:250px;background:rgba(6,182,212,.07);top:60%;left:60%;animation:f 15s ease-in-out infinite}
+    @keyframes f{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-20px) scale(1.1)}}
+    /* Grid lines */
+    .grid-lines{position:fixed;inset:0;background-image:linear-gradient(rgba(124,58,237,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.04) 1px,transparent 1px);background-size:60px 60px;z-index:0}
+    /* Card */
+    .login-wrap{position:relative;z-index:1;width:100%;max-width:440px;padding:2rem}
+    .login-card{background:rgba(9,9,18,.9);border:1px solid var(--border);border-radius:var(--radius);padding:3rem 2.5rem;backdrop-filter:blur(30px)}
+    .login-logo{text-align:center;margin-bottom:2rem}
+    .logo-ring{display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;background:rgba(124,58,237,.1);border:2px solid rgba(124,58,237,.3);border-radius:50%;margin-bottom:1rem}
+    .logo-ring i{font-size:1.8rem;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .login-title{font-family:var(--font-h);font-size:1.5rem;font-weight:800;background:var(--gradient-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .login-sub{color:var(--text-2);font-size:.83rem;margin-top:.35rem}
+    /* Form */
+    .fg{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.25rem}
+    .fg label{font-size:.75rem;font-weight:600;color:var(--text-2);letter-spacing:.5px}
+    .input-wrap{position:relative}
+    .input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:.875rem}
+    .input-wrap input{
+      width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;
+      padding:12px 16px 12px 42px;color:var(--text);font-family:var(--font);font-size:.9rem;
+      outline:none;transition:var(--tr);
+    }
+    .input-wrap input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+    .input-wrap input::placeholder{color:var(--text-3)}
+    .toggle-pw{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-3);cursor:pointer;font-size:.875rem;transition:var(--tr)}
+    .toggle-pw:hover{color:var(--text)}
+    .remember-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
+    .remember{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--text-2);cursor:pointer}
+    .remember input{accent-color:var(--primary)}
+    .forgot{font-size:.8rem;color:var(--primary-light,#A78BFA);transition:var(--tr)}
+    .forgot:hover{color:#fff}
+    .btn-login{
+      width:100%;padding:14px;background:var(--gradient);color:#fff;border:none;border-radius:12px;
+      font-family:var(--font);font-weight:700;font-size:.95rem;cursor:pointer;
+      transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:.5rem;
+    }
+    .btn-login:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(124,58,237,.4)}
+    .btn-login:disabled{opacity:.6;pointer-events:none}
+    .error-msg{
+      display:none;align-items:center;gap:.5rem;
+      padding:12px 16px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);
+      border-radius:10px;color:#F87171;font-size:.8rem;margin-bottom:1rem;
+    }
+    .error-msg.show{display:flex}
+    .divider{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0;color:var(--text-3);font-size:.75rem}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .back-link{display:block;text-align:center;font-size:.8rem;color:var(--text-3);transition:var(--tr)}
+    .back-link:hover{color:var(--text)}
+    .back-link i{margin-right:4px}
+    /* Spinner */
+    .fa-spin{animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+<div class="bg">
+  <div class="g1"></div><div class="g2"></div><div class="g3"></div>
+</div>
+<div class="grid-lines"></div>
+
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-ring"><i class="fas fa-shield-halved"></i></div>
+      <div class="login-title">Admin Access</div>
+      <p class="login-sub">Sign in to manage your portfolio &amp; vault</p>
+    </div>
+
+    <div class="error-msg" id="errMsg">
+      <i class="fas fa-circle-exclamation"></i>
+      <span id="errTxt">Invalid credentials. Please try again.</span>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="fg">
+        <label for="email">Email Address</label>
+        <div class="input-wrap">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="email" placeholder="admin@example.com" required autocomplete="email"/>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="••••••••••" required autocomplete="current-password"/>
+          <span class="toggle-pw" id="togglePw"><i class="fas fa-eye" id="eyeIco"></i></span>
+        </div>
+      </div>
+
+      <div class="remember-row">
+        <label class="remember">
+          <input type="checkbox" id="rememberMe"/> Remember me
+        </label>
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn-login" id="loginBtn">
+        <i class="fas fa-right-to-bracket"></i> Sign In
+      </button>
+    </form>
+
+    <div class="divider">or</div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+  </div>
+</div>
+
+<script type="module">
+  import { login, redirectIfLoggedIn } from './js/auth.js';
+
+  // Redirect if already logged in
+  redirectIfLoggedIn('dashboard.html');
+
+  // Toggle password visibility
+  const pwInput = document.getElementById('password');
+  const eyeIco  = document.getElementById('eyeIco');
+  document.getElementById('togglePw').addEventListener('click', () => {
+    const show = pwInput.type === 'password';
+    pwInput.type = show ? 'text' : 'password';
+    eyeIco.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+  });
+
+  // Pre-fill email if remembered
+  const saved = localStorage.getItem('sk_email');
+  if (saved) { document.getElementById('email').value = saved; document.getElementById('rememberMe').checked = true; }
+
+  // Form submit
+  document.getElementById('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn   = document.getElementById('loginBtn');
+    const errEl = document.getElementById('errMsg');
+    const errTx = document.getElementById('errTxt');
+    const email = document.getElementById('email').value.trim();
+    const pass  = document.getElementById('password').value;
+
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in…';
+    btn.disabled  = true;
+    errEl.classList.remove('show');
+
+    // Remember me
+    if (document.getElementById('rememberMe').checked) localStorage.setItem('sk_email', email);
+    else localStorage.removeItem('sk_email');
+
+    try {
+      await login(email, pass);
+      window.location.href = 'dashboard.html';
+    } catch (err) {
+      let msg = 'Invalid credentials. Please try again.';
+      if (err.message.includes('not configured')) msg = 'Firebase not set up yet. Please follow SETUP.md.';
+      else if (err.code === 'auth/user-not-found')     msg = 'No account found with this email.';
+      else if (err.code === 'auth/wrong-password')     msg = 'Incorrect password.';
+      else if (err.code === 'auth/too-many-requests')  msg = 'Too many attempts. Try again later.';
+
+      errTx.textContent = msg;
+      errEl.classList.add('show');
+      btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Sign In';
+      btn.disabled  = false;
+    }
+  });
+</script>
+</body>
+</html>

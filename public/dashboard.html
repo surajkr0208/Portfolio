@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Admin Dashboard — Suraj Kumar Mahto</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+</head>
+<body>
+
+<!-- ── Toast ─────────────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  SIDEBAR & OVERLAY                                       -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="sb-overlay" id="sbOverlay" onclick="document.getElementById('sidebar').classList.remove('open'); this.classList.remove('open');"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-mark">SK</div>
+    <div>
+      <div class="sb-logo-txt">Admin Panel</div>
+      <div class="sb-logo-sub">Suraj Kumar Mahto</div>
+    </div>
+  </div>
+
+  <div class="sb-user">
+    <div class="sb-avatar">S</div>
+    <div>
+      <div class="sb-user-name">Suraj Kumar Mahto</div>
+      <div class="sb-user-role"><span class="sb-online"></span>Online</div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section">Main</div>
+    <a class="sb-link active" data-page="overview"     onclick="nav('overview')"><i class="fas fa-gauge-high"></i> Overview</a>
+    <a class="sb-link"        data-page="profile"      onclick="nav('profile')"><i class="fas fa-user-pen"></i> Edit Profile</a>
+
+    <div class="sb-section">Portfolio</div>
+    <a class="sb-link" data-page="skills"       onclick="nav('skills')"><i class="fas fa-code"></i> Skills</a>
+    <a class="sb-link" data-page="projects"     onclick="nav('projects')"><i class="fas fa-folder"></i> Projects</a>
+    <a class="sb-link" data-page="experience"   onclick="nav('experience')"><i class="fas fa-briefcase"></i> Experience</a>
+    <a class="sb-link" data-page="certificates" onclick="nav('certificates')"><i class="fas fa-award"></i> Certificates</a>
+    <a class="sb-link" data-page="socials"      onclick="nav('socials')"><i class="fas fa-share-nodes"></i> Social Links</a>
+
+    <div class="sb-section">Private</div>
+    <a class="sb-link" data-page="messages" onclick="nav('messages')"><i class="fas fa-envelope"></i> Messages</a>
+    <a class="sb-link" href="vault.html"><i class="fas fa-vault"></i> Document Vault <span class="sb-badge">🔒</span></a>
+
+    <div class="sb-section">View</div>
+    <a class="sb-link" href="index.html" target="_blank"><i class="fas fa-eye"></i> View Portfolio</a>
+  </nav>
+
+  <div class="sb-footer">
+    <button class="sb-btn" onclick="window.location.href='index.html'">
+      <i class="fas fa-arrow-left"></i> Back to Portfolio
+    </button>
+    <button class="sb-btn sb-btn-logout" id="logoutBtn">
+      <i class="fas fa-right-from-bracket"></i> Sign Out
+    </button>
+  </div>
+</aside>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  MAIN                                                    -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <button class="topbar-btn d-mobile-only" onclick="document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sbOverlay').classList.toggle('open');">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="topbar-title" id="topbarTitle">Overview</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" onclick="window.open('index.html','_blank')">
+        <i class="fas fa-external-link-alt"></i> View Site
+      </button>
+      <button class="topbar-btn topbar-btn-primary" id="topbarSave" style="display:none" onclick="saveCurrentPage()">
+        <i class="fas fa-floppy-disk"></i> Save Changes
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  OVERVIEW PAGE                                         -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="page active" id="page-overview">
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-box-top">
+          <div>
+            <div class="stat-box-num" id="statsProjects">—</div>
+            <div class="stat-box-lbl">Projects</div>
+          </div>
+          <div class="stat-box-icon" style="background:rgba(124,58,237,.15);color:#A78BFA"><i class="fas fa-folder"></i></div>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-top">
+          <div>
+            <div class="stat-box-num" id="statsCerts">—</div>
+            <div class="stat-box-lbl">Certificates</div>
+          </div>
+          <div class="stat-box-icon" style="background:rgba(16,185,129,.15);color:#10B981"><i class="fas fa-award"></i></div>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-top">
+          <div>
+            <div class="stat-box-num" id="statsSkills">—</div>
+            <div class="stat-box-lbl">Skills</div>
+          </div>
+          <div class="stat-box-icon" style="background:rgba(6,182,212,.15);color:#06B6D4"><i class="fas fa-code"></i></div>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-top">
+          <div>
+            <div class="stat-box-num" id="statsExp">—</div>
+            <div class="stat-box-lbl">Experiences</div>
+          </div>
+          <div class="stat-box-icon" style="background:rgba(245,158,11,.15);color:#F59E0B"><i class="fas fa-briefcase"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-card-title"><i class="fas fa-circle-info"></i> Welcome Back, Suraj!</div>
+      </div>
+      <div class="sec-card-body" style="color:var(--text-2);font-size:.875rem;line-height:1.75">
+        <p>Use the sidebar to manage all sections of your portfolio. All changes are saved to Firebase and reflected on your public site instantly.</p>
+        <br/>
+        <p><strong style="color:var(--text)">Quick tips:</strong></p>
+        <ul style="margin-top:.5rem;padding-left:1.25rem;display:flex;flex-direction:column;gap:.35rem">
+          <li>🔒 Access your <strong style="color:var(--primary-light)">Document Vault</strong> from the sidebar to securely store personal documents</li>
+          <li>🖼️ Upload your <strong style="color:var(--primary-light)">profile photo</strong> in Edit Profile</li>
+          <li>➕ Add projects, skills, and certificates directly from their respective pages</li>
+          <li>🌐 Click <em>View Site</em> to see the public portfolio</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  PROFILE PAGE                                          -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="page" id="page-profile">
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-card-title"><i class="fas fa-user-pen"></i> Edit Profile</div>
+        <button class="btn btn-primary" onclick="saveProfile()"><i class="fas fa-floppy-disk"></i> Save</button>
+      </div>
+      <div class="sec-card-body">
+        <!-- Photo -->
+        <div class="profile-photo-wrap" style="margin-bottom:1.5rem">
+          <img src="assets/profile.jpg" id="profilePhotoPreview" class="profile-photo-preview"
+               onerror="this.src='https://ui-avatars.com/api/?name=SK&size=200&background=7C3AED&color=fff&bold=true'"/>
+          <div>
+            <p style="font-size:.8rem;color:var(--text-2);margin-bottom:.6rem">Profile Photo</p>
+            <label class="btn btn-ghost btn-sm" style="cursor:pointer">
+              <i class="fas fa-upload"></i> Upload Photo
+              <input type="file" id="profilePhotoInput" accept="image/*" style="display:none" onchange="previewProfilePhoto(this)"/>
+            </label>
+            <p style="font-size:.68rem;color:var(--text-3);margin-top:.4rem">JPG, PNG, WEBP · max 5MB</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="fg">
+            <label>Full Name</label>
+            <input type="text" id="pName" placeholder="Suraj Kumar Mahto"/>
+          </div>
+          <div class="fg">
+            <label>Professional Title</label>
+            <input type="text" id="pTitle" placeholder="B.Tech CSE (AI &amp; ML) | Full Stack Developer"/>
+          </div>
+          <div class="fg full">
+            <label>Tagline / Headline</label>
+            <input type="text" id="pTagline" placeholder="Building modern web applications and exploring AI &amp; ML"/>
+          </div>
+          <div class="fg full">
+            <label>About Me / Bio</label>
+            <textarea id="pBio" rows="5" placeholder="Write a short bio about yourself…"></textarea>
+          </div>
+          <div class="fg">
+            <label>Location</label>
+            <input type="text" id="pLocation" placeholder="Jharkhand, India"/>
+          </div>
+          <div class="fg">
+            <label>Email</label>
+            <input type="email" id="pEmail" placeholder="surajkumarmahto7033@gmail.com"/>
+          </div>
+          <div class="fg">
+            <label>Resume / CV Link (Google Drive / direct URL)</label>
+            <input type="url" id="pResume" placeholder="https://drive.google.com/…"/>
+          </div>
+          <div class="fg">
+            <label>Available for</label>
+            <input type="text" id="pAvailable" placeholder="Internships, Freelance, Open Source"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  SKILLS PAGE                                           -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="page" id="page-skills">
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-card-title"><i class="fas fa-code"></i> Skills &amp; Technologies</div>
+        <button class="btn btn-primary" onclick="openModal('skill')"><i class="fas fa-plus"></i> Add Skill</button>
+      </div>
+      <div class="sec-card-body">
+        <div class="skills-list" id="skillsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  PROJECTS PAGE                                         -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="page" id="page-projects">
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-card-title"><i class="fas fa-folder"></i> Projects</div>
+        <button class="btn btn-primary" onclick="openModal('project')"><i class="fas fa-plus"></i> Add Project</button>
+      </div>
+      <div class="sec-card-body">
+        <div class="proj-list" id="projList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  EXPERIENCE PAGE                                       -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="page" id="page-experience">
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-card-title"><i class="fas fa-briefcase"></i> Work Experience</div>
+        <button class="btn btn-primary" onclick="openModal('exp')"><i class="fas fa-plus"></i> Add Experience</button>
+      </div>
+      <div class="sec-card-body">
+        <div class="exp-list" id="expList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  CERTIFICATES PAGE                                     -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="page" id="page-certificates">
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-card-title"><i class="fas fa-award"></i> Certificates</div>
+        <button class="btn btn-primary" onclick="openModal('cert')"><i class="fas fa-plus"></i> Add Certificate</button>
+      </div>
+      <div class="sec-card-body">
+        <div class="cert-list" id="certList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  SOCIAL LINKS PAGE                                     -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="page" id="page-socials">
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-card-title"><i class="fas fa-share-nodes"></i> Social Links</div>
+        <button class="btn btn-primary" onclick="saveSocials()"><i class="fas fa-floppy-disk"></i> Save</button>
+      </div>
+      <div class="sec-card-body">
+        <div class="form-grid">
+          <div class="fg"><label><i class="fab fa-github"></i> GitHub URL</label><input type="url" id="sGithub" placeholder="https://github.com/…"/></div>
+          <div class="fg"><label><i class="fab fa-linkedin"></i> LinkedIn URL</label><input type="url" id="sLinkedin" placeholder="https://www.linkedin.com/in/…"/></div>
+          <div class="fg"><label><i class="fab fa-x-twitter"></i> X (Twitter) URL</label><input type="url" id="sTwitter" placeholder="https://x.com/…"/></div>
+          <div class="fg"><label><i class="fab fa-instagram"></i> Instagram URL</label><input type="url" id="sInstagram" placeholder="https://www.instagram.com/…"/></div>
+          <div class="fg"><label><i class="fab fa-reddit"></i> Reddit URL</label><input type="url" id="sReddit" placeholder="https://www.reddit.com/u/…"/></div>
+          <div class="fg"><label><i class="fab fa-discord"></i> Discord Profile URL</label><input type="url" id="sDiscord" placeholder="https://discord.com/users/…"/></div>
+          <div class="fg"><label><i class="fas fa-envelope"></i> Email</label><input type="email" id="sEmail" placeholder="you@email.com"/></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  MESSAGES PAGE                                         -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="page" id="page-messages">
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-card-title"><i class="fas fa-envelope"></i> Contact Messages</div>
+      </div>
+      <div class="sec-card-body" style="padding: 0;">
+        <div class="messages-list" id="messagesList" style="display: flex; flex-direction: column; gap: 1px; background: var(--border);">
+          <!-- Messages will load here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /main -->
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  MODAL — Skill                                           -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="d-modal" id="modal-skill">
+  <div class="d-modal-bg" onclick="closeModal('skill')"></div>
+  <div class="d-modal-box">
+    <div class="d-modal-head">
+      <div class="d-modal-title" id="skillModalTitle">Add Skill</div>
+      <button class="d-modal-close" onclick="closeModal('skill')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="d-modal-body">
+      <input type="hidden" id="skillId"/>
+      <div class="fg"><label>Skill Name</label><input type="text" id="skillName" placeholder="e.g. Python"/></div>
+      <div class="fg"><label>Font Awesome Icon Class</label><input type="text" id="skillIcon" placeholder="fab fa-python"/></div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Color</label>
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <input type="color" id="skillColor" value="#7C3AED"/>
+            <input type="text" id="skillColorHex" placeholder="#7C3AED" style="flex:1"/>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Proficiency Level: <strong id="skillLevelVal">50</strong>%</label>
+          <input type="range" id="skillLevel" min="5" max="100" value="50" oninput="document.getElementById('skillLevelVal').textContent=this.value"/>
+        </div>
+      </div>
+    </div>
+    <div class="d-modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('skill')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSkill()"><i class="fas fa-floppy-disk"></i> Save Skill</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  MODAL — Project                                         -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="d-modal" id="modal-project">
+  <div class="d-modal-bg" onclick="closeModal('project')"></div>
+  <div class="d-modal-box">
+    <div class="d-modal-head">
+      <div class="d-modal-title" id="projModalTitle">Add Project</div>
+      <button class="d-modal-close" onclick="closeModal('project')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="d-modal-body">
+      <input type="hidden" id="projId"/>
+      <div class="fg"><label>Project Title</label><input type="text" id="projTitle" placeholder="Personal Blog Site"/></div>
+      <div class="fg"><label>Short Description</label><textarea id="projDesc" rows="3" placeholder="What does this project do?"></textarea></div>
+      <div class="form-grid">
+        <div class="fg"><label>Emoji / Icon</label><input type="text" id="projIcon" placeholder="📝"/></div>
+        <div class="fg">
+          <label>Accent Color</label>
+          <input type="color" id="projColor" value="#7C3AED"/>
+        </div>
+        <div class="fg"><label>GitHub URL</label><input type="url" id="projGithub" placeholder="https://github.com/…"/></div>
+        <div class="fg"><label>Live Demo URL (optional)</label><input type="url" id="projLive" placeholder="https://…"/></div>
+      </div>
+      <div class="fg">
+        <label>Tech Stack (comma-separated)</label>
+        <input type="text" id="projTech" placeholder="Python, Flask, SQLite, HTML, CSS"/>
+      </div>
+    </div>
+    <div class="d-modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('project')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProject()"><i class="fas fa-floppy-disk"></i> Save Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  MODAL — Experience                                      -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="d-modal" id="modal-exp">
+  <div class="d-modal-bg" onclick="closeModal('exp')"></div>
+  <div class="d-modal-box">
+    <div class="d-modal-head">
+      <div class="d-modal-title" id="expModalTitle">Add Experience</div>
+      <button class="d-modal-close" onclick="closeModal('exp')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="d-modal-body">
+      <input type="hidden" id="expId"/>
+      <div class="form-grid">
+        <div class="fg"><label>Company / Organisation</label><input type="text" id="expCompany" placeholder="Pinnacle Labs"/></div>
+        <div class="fg"><label>Your Role</label><input type="text" id="expRole" placeholder="Python Development Intern"/></div>
+        <div class="fg"><label>Duration</label><input type="text" id="expDuration" placeholder="April 2026 – May 2026"/></div>
+        <div class="fg"><label>Website</label><input type="url" id="expWebsite" placeholder="https://…"/></div>
+        <div class="fg">
+          <label>Accent Color</label>
+          <input type="color" id="expColor" value="#10B981"/>
+        </div>
+      </div>
+      <div class="fg"><label>Description</label><textarea id="expDesc" rows="4" placeholder="Describe your responsibilities and achievements…"></textarea></div>
+    </div>
+    <div class="d-modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('exp')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveExp()"><i class="fas fa-floppy-disk"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  MODAL — Certificate                                     -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="d-modal" id="modal-cert">
+  <div class="d-modal-bg" onclick="closeModal('cert')"></div>
+  <div class="d-modal-box">
+    <div class="d-modal-head">
+      <div class="d-modal-title" id="certModalTitle">Add Certificate</div>
+      <button class="d-modal-close" onclick="closeModal('cert')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="d-modal-body">
+      <input type="hidden" id="certId"/>
+      <div class="fg"><label>Certificate Title</label><input type="text" id="certTitle" placeholder="Python Development Internship"/></div>
+      <div class="form-grid">
+        <div class="fg"><label>Issuing Organisation</label><input type="text" id="certIssuer" placeholder="Pinnacle Labs"/></div>
+        <div class="fg"><label>Date of Issue</label><input type="date" id="certDate"/></div>
+        <div class="fg"><label>Credential ID (optional)</label><input type="text" id="certCred" placeholder="PL/2026/APRP1/096"/></div>
+        <div class="fg"><label>Credential URL (optional)</label><input type="url" id="certCredUrl" placeholder="https://…/verify"/></div>
+      </div>
+      <div class="fg">
+        <label>Certificate Image</label>
+        <div class="drop-zone" id="certDropZone" onclick="document.getElementById('certImgFile').click()">
+          <div class="drop-zone-ico"><i class="fas fa-image"></i></div>
+          <p>Drag &amp; drop or <span>browse</span></p>
+          <p style="font-size:.7rem;color:var(--text-3);margin-top:.25rem">JPG, PNG, WEBP · max 10MB</p>
+          <input type="file" id="certImgFile" accept="image/*" onchange="previewCertImg(this)"/>
+        </div>
+        <div class="img-preview-wrap" id="certPreviewWrap" style="display:none">
+          <img id="certPreviewImg" class="img-preview" src="" alt="Preview"/>
+          <span class="img-remove" onclick="removeCertPreview()"><i class="fas fa-times"></i></span>
+        </div>
+      </div>
+    </div>
+    <div class="d-modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('cert')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCert()"><i class="fas fa-floppy-disk"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Public portfolio data — anyone can read, only you can write ──
+    match /portfolio/{document=**} {
+      allow read:  if true;
+      allow write: if request.auth != null;
+    }
+
+    // ── Vault metadata — only authenticated user ──
+    match /vault/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // ── Contact messages — public write, only you can read ──
+    match /contacts/{document} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+  }
+}

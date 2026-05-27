@@ -1,0 +1,16 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ── Public assets (profile photo, project thumbnails, certificates) ──
+    match /public/{allPaths=**} {
+      allow read:  if true;
+      allow write: if request.auth != null;
+    }
+
+    // ── Private vault documents — ONLY authenticated user ──
+    match /vault/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

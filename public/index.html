@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Suraj Kumar Mahto | suraj-portfolio | Full Stack Developer & AI/ML</title>
+  <meta name="description" content="Welcome to suraj-portfolio. Portfolio of Suraj Kumar Mahto — B.Tech CSE (AI & ML) student, aspiring Full Stack Developer from Jharkhand, India."/>
+  <meta name="keywords" content="suraj-portfolio, Suraj Kumar Mahto, full stack developer, AI/ML, portfolio, web developer, software engineer"/>
+  <meta name="author" content="Suraj Kumar Mahto"/>
+  <meta property="og:title" content="suraj-portfolio | Suraj Kumar Mahto"/>
+  <meta property="og:description" content="Welcome to suraj-portfolio! B.Tech CSE (AI & ML) | Full Stack Developer | Python, Flask, JavaScript"/>
+  <meta property="og:type" content="website"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>"/>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ── Custom Cursor ─────────────────────────────────────── -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-f" id="cursorF"></div>
+
+<!-- ── Loader ─────────────────────────────────────────────── -->
+<div class="loader" id="loader">
+  <div class="loader-inner">
+    <div class="loader-logo">SK</div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+    <p class="loader-txt">Loading Portfolio…</p>
+  </div>
+</div>
+
+<!-- ── Toast ──────────────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<!-- ── Navigation ─────────────────────────────────────────── -->
+<nav class="navbar" id="navbar">
+  <div class="nav-wrap">
+    <a href="#home" class="nav-logo">
+      <span class="nav-logo-txt">Suraj.</span>
+      <span class="nav-dot"></span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home"         class="nav-link active">Home</a></li>
+      <li><a href="#about"        class="nav-link">About</a></li>
+      <li><a href="#skills"       class="nav-link">Skills</a></li>
+      <li><a href="#projects"     class="nav-link">Projects</a></li>
+      <li><a href="#experience"   class="nav-link">Experience</a></li>
+      <li><a href="#certificates" class="nav-link">Certificates</a></li>
+      <li><a href="#contact"      class="nav-link">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="login.html" class="btn-admin" id="adminBtn" title="Admin Login">
+        <i class="fas fa-lock"></i>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  HERO                                                    -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="hero" id="home">
+  <div id="particles-js"></div>
+  <div class="h-glow h-glow-1"></div>
+  <div class="h-glow h-glow-2"></div>
+  <div class="h-glow h-glow-3"></div>
+
+  <div class="hero-wrap">
+    <!-- Text side -->
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="h-badge-dot"></span>
+        Available for Opportunities
+      </div>
+
+      <h1 class="hero-name">
+        Hi, I'm <span class="grad-text" id="heroName">Suraj Kumar Mahto</span>
+      </h1>
+
+      <div class="hero-typing">
+        <span class="static-txt">I'm a&nbsp;</span>
+        <span class="tw-word" id="tw"></span>
+        <span class="tw-cursor">|</span>
+      </div>
+
+      <p class="hero-bio" id="heroBio">
+        Building modern web applications and exploring the power of AI &amp; Machine Learning.
+      </p>
+
+      <div class="hero-btns">
+        <a href="#projects" class="btn btn-primary">
+          <i class="fas fa-rocket"></i> View Projects
+        </a>
+        <a href="#contact" class="btn btn-ghost">
+          <i class="fas fa-paper-plane"></i> Get In Touch
+        </a>
+      </div>
+
+      <div class="hero-socials">
+        <a href="https://github.com/surajkr0208"                    target="_blank" class="h-social" title="GitHub"><i class="fab fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/suraj-sk0208/"          target="_blank" class="h-social" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+        <a href="https://x.com/SurajKu00464975"                      target="_blank" class="h-social" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://www.instagram.com/suraj.kumar.0208"         target="_blank" class="h-social" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.reddit.com/u/Antique-Guava-6497/"       target="_blank" class="h-social" title="Reddit"><i class="fab fa-reddit"></i></a>
+        <a href="mailto:surajkumarmahto7033@gmail.com"                class="h-social" title="Email"><i class="fas fa-envelope"></i></a>
+      </div>
+    </div>
+
+    <!-- Photo side -->
+    <div class="hero-visual">
+      <div class="profile-wrap">
+        <div class="p-ring p-ring-1"></div>
+        <div class="p-ring p-ring-2"></div>
+        <div class="p-ring p-ring-3"></div>
+        <div class="p-img-wrap">
+          <img class="p-img" src="assets/profile.jpg" alt="Suraj Kumar Mahto"
+               onerror="this.src='https://ui-avatars.com/api/?name=Suraj+Kumar+Mahto&size=400&background=7C3AED&color=fff&bold=true&font-size=0.33'"/>
+        </div>
+        <div class="f-badge f-badge-top">
+          <i class="fas fa-code"></i><span>Full Stack Dev</span>
+        </div>
+        <div class="f-badge f-badge-bot">
+          <i class="fas fa-brain"></i><span>AI &amp; ML</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-ind">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  ABOUT                                                   -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="about section" id="about">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label"><i class="fas fa-user"></i> Get to Know Me</span>
+      <h2 class="section-title">About <span class="grad-text">Me</span></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="about-grid">
+      <!-- Image -->
+      <div class="about-img-side rev-l">
+        <div class="about-img-wrap">
+          <img src="assets/profile.jpg" alt="Suraj Kumar Mahto"
+               onerror="this.src='https://ui-avatars.com/api/?name=Suraj+Kumar&size=400&background=7C3AED&color=fff&bold=true'"/>
+          <div class="about-img-deco"></div>
+        </div>
+        <div class="about-stats">
+          <div class="stat-card">
+            <span class="stat-num" data-target="3">0</span>
+            <span class="stat-lbl">Projects</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" data-target="1">0</span>
+            <span class="stat-lbl">Internship</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" data-target="10">0</span>
+            <span class="stat-lbl">Skills</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="about-content rev-r">
+        <div class="about-info-grid">
+          <div class="info-item">
+            <i class="fas fa-user"></i>
+            <div>
+              <span class="info-lbl">Name</span>
+              <span class="info-val" id="aboutName">Suraj Kumar Mahto</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-graduation-cap"></i>
+            <div>
+              <span class="info-lbl">Degree</span>
+              <span class="info-val">B.Tech CSE (AI &amp; ML)</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <span class="info-lbl">Location</span>
+              <span class="info-val" id="aboutLocation">Jharkhand, India</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-envelope"></i>
+            <div>
+              <span class="info-lbl">Email</span>
+              <span class="info-val" id="aboutEmail" style="font-size:.78rem">surajkumarmahto7033@gmail.com</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="about-bio" id="aboutBio">
+          I am a <strong>B.Tech student</strong> specialising in Computer Science Engineering with
+          <strong>AI &amp; ML</strong>. I'm passionate about full-stack development, open-source
+          contribution, and creating practical software solutions. I have worked on projects using
+          <strong>Python, Flask, HTML, CSS, JavaScript, and SQLite</strong>. I enjoy learning
+          modern technologies and continuously levelling up my skills.
+        </p>
+
+        <div class="about-btns">
+          <a href="assets/resume.pdf" download class="btn btn-primary" id="cvBtn">
+            <i class="fas fa-download"></i> Download CV
+          </a>
+          <a href="#contact" class="btn btn-outline">
+            <i class="fas fa-handshake"></i> Hire Me
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  SKILLS                                                  -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="skills section" id="skills">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label"><i class="fas fa-code"></i> What I Know</span>
+      <h2 class="section-title">Skills &amp; <span class="grad-text">Technologies</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid" id="skillsGrid">
+      <!-- Rendered by app.js -->
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  PROJECTS                                                -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="projects section" id="projects">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label"><i class="fas fa-folder-open"></i> What I've Built</span>
+      <h2 class="section-title">Featured <span class="grad-text">Projects</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="projects-grid" id="projectsGrid">
+      <!-- Rendered by app.js -->
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  EXPERIENCE                                              -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="experience section" id="experience">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label"><i class="fas fa-briefcase"></i> My Journey</span>
+      <h2 class="section-title">Work <span class="grad-text">Experience</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="timeline" id="timeline">
+      <!-- Rendered by app.js -->
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  CERTIFICATES                                            -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="certificates section" id="certificates">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label"><i class="fas fa-award"></i> Achievements</span>
+      <h2 class="section-title">Certificates &amp; <span class="grad-text">Awards</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="certs-grid" id="certsGrid">
+      <!-- Rendered by app.js -->
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!--  CONTACT                                                 -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="contact section" id="contact">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label"><i class="fas fa-paper-plane"></i> Let's Talk</span>
+      <h2 class="section-title">Get In <span class="grad-text">Touch</span></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Info -->
+      <div class="contact-info rev-l">
+        <h3>Let's work together!</h3>
+        <p>I'm open to internships, freelance projects, and collaborations. Feel free to reach out — I reply within 24 hours.</p>
+
+        <div class="contact-links">
+          <a href="mailto:surajkumarmahto7033@gmail.com" class="c-link" id="contactEmailLink">
+            <div class="c-icon"><i class="fas fa-envelope"></i></div>
+            <div>
+              <span class="c-link-lbl">Email</span>
+              <span class="c-link-val" id="contactEmailVal">surajkumarmahto7033@gmail.com</span>
+            </div>
+          </a>
+          <a href="https://www.linkedin.com/in/suraj-sk0208/" target="_blank" class="c-link">
+            <div class="c-icon"><i class="fab fa-linkedin"></i></div>
+            <div>
+              <span class="c-link-lbl">LinkedIn</span>
+              <span class="c-link-val">suraj-sk0208</span>
+            </div>
+          </a>
+          <a href="https://github.com/surajkr0208" target="_blank" class="c-link">
+            <div class="c-icon"><i class="fab fa-github"></i></div>
+            <div>
+              <span class="c-link-lbl">GitHub</span>
+              <span class="c-link-val">surajkr0208</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="socials-grid">
+          <a href="https://github.com/surajkr0208"                   target="_blank" class="sg-item" title="GitHub"><i class="fab fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/suraj-sk0208/"         target="_blank" class="sg-item" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+          <a href="https://x.com/SurajKu00464975"                     target="_blank" class="sg-item" title="X"><i class="fab fa-x-twitter"></i></a>
+          <a href="https://www.instagram.com/suraj.kumar.0208"        target="_blank" class="sg-item" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.reddit.com/u/Antique-Guava-6497/"      target="_blank" class="sg-item" title="Reddit"><i class="fab fa-reddit"></i></a>
+          <a href="https://discord.com/users/1289820689469276212"      target="_blank" class="sg-item" title="Discord"><i class="fab fa-discord"></i></a>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="contact-form-wrap rev-r">
+        <form class="c-form" id="contactForm" novalidate>
+          <div class="fg">
+            <label for="cName">Your Name</label>
+            <input type="text" id="cName" placeholder="John Doe" required/>
+          </div>
+          <div class="fg">
+            <label for="cEmail">Your Email</label>
+            <input type="email" id="cEmail" placeholder="john@example.com" required/>
+          </div>
+          <div class="fg">
+            <label for="cSubject">Subject</label>
+            <input type="text" id="cSubject" placeholder="Project Collaboration"/>
+          </div>
+          <div class="fg">
+            <label for="cMsg">Message</label>
+            <textarea id="cMsg" rows="5" placeholder="Tell me about your project…" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" id="sendBtn">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ─────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">Suraj<span class="grad-text">.</span></div>
+      <p class="footer-txt">Designed &amp; Built with <span class="heart">❤️</span> by Suraj Kumar Mahto</p>
+      <p class="footer-copy">© 2026 Suraj Kumar Mahto · All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ── Certificate Modal ──────────────────────────────────── -->
+<div class="modal" id="certModal">
+  <div class="modal-bg" onclick="closeCertModal()"></div>
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeCertModal()"><i class="fas fa-times"></i></button>
+    <img class="modal-img" id="modalImg" src="" alt="Certificate"/>
+    <div class="modal-meta">
+      <h3 id="modalTitle"></h3>
+      <p id="modalSub"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Scripts ────────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
