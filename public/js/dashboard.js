@@ -437,6 +437,12 @@ let projectsCache = [];
 async function loadProjects() {
   projectsCache = await safeGet('projects', []);
   if (!projectsCache.length) projectsCache = DEFAULTS.projects;
+  
+  if (projectsCache.length === 1 && projectsCache[0].title === 'Portfolio' && !window._restored) {
+    window._restored = true;
+    return RESTORE_PROJECTS();
+  }
+
   const list = document.getElementById('projList');
 
   // Render admin projects (editable)
