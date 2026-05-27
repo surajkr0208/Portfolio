@@ -294,7 +294,7 @@ ul{list-style:none}
 /* ── Hero ─────────────────────────────────────────────────── */
 .hero{
   min-height:100vh;display:flex;align-items:center;
-  position:relative;overflow:hidden;padding-top:var(--nav-h);
+  position:relative;overflow:hidden;padding-top:var(--nav-h);padding-bottom:120px;
 }
 #particles-js{position:absolute;inset:0;z-index:0}
 .h-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
